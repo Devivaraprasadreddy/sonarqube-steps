@@ -1,0 +1,78 @@
+Steps to create a Sonarqube in AWS ec2 and also Locally
+
+1. Launch an Instance with t3.medium
+2. And connect to console or putty
+3. sudo apt-get update
+4. sudo apt-get upgrade -y
+
+install java
+
+5. sudo apt install openjdk-17-jdk -y
+
+6. wget https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-6.1.0.4477-linux-x64.zip?_gl=1*uvs7o7*_gcl_au*MTA0NjE5NjE3LjE3MjYxMjc0MTM.*_ga*MTcwMTM5MDMyNy4xNzI2MTI3NDE0*_ga_9JZ0GZ5TC6*MTcyNjE2MDc1Ni4xLjEuMTcyNjE2MTI3My4zOS4wLjA
+
+7. apt-get install unzip -y
+
+8. unzip 'sonar-scanner-cli-6.1.0.4477-linux-x64.zip?_gl=1*uvs7o7*_gcl_au*MTA0NjE5NjE3LjE3MjYxMjc0MTM.*_ga*MTcwMTM5MDMyNy4xNzI2MTI3NDE0*_ga_9JZ0GZ5TC6*MTcyNjE2MDc1Ni4xLjEuMTcyNjE2MTI3My4zOS4wLjA.1'
+
+9. rm 'sonar-scanner-cli-6.1.0.4477-linux-x64.zip?_gl=1*uvs7o7*_gcl_au*MTA0NjE5NjE3LjE3MjYxMjc0MTM.*_ga*MTcwMTM5MDMyNy4xNzI2MTI3NDE0*_ga_9JZ0GZ5TC6*MTcyNjE2MDc1Ni4xLjEuMTcyNjE2MTI3My4zOS4wLjA.1'
+
+10. mv sonar-scanner-6.1.0.4477-linux-x64/ /opt/sonar-scanner
+
+11. export PATH=$PATH:/opt/sonar-scanner/bin
+
+12. source ~/.bashrc
+
+13. source /etc/profile
+
+14. if it is not showing the sonar scanner version please follow the below steps
+
+15. sudo wget https://binaries.sonarsource.com/Distribution/sonarqube/sonarqube-9.9.2.77730.zip -P /opt
+
+16. 	sudo useradd sonar
+
+17. sudo unzip /opt/sonarqube-9.9.2.77730.zip -d /opt
+   
+18 .sudo mv /opt/sonarqube-9.9.2.77730 /opt/sonar
+
+19. sudo chown -R sonar:sonar /opt/sonar
+
+20. sudo vi /etc/sudoers
+
+21. User privilege specification  
+    sonar   ALL=(ALL:ALL) NOPASSWD:ALL
+
+22. vi /etc/systemd/system/sonar.service
+
+23. [Unit]
+Description=SonarQube service
+After=network.target
+
+[Service]
+Type=forking
+User=sonar
+ExecStart=/opt/sonar/bin/linux-x86-64/sonar.sh start
+ExecStop=/opt/sonar/bin/linux-x86-64/sonar.sh stop
+Restart=always
+LimitNOFILE=65536
+
+[Install]
+WantedBy=multi-user.target
+
+
+24. sudo systemctl start sonar
+
+25. sudo systemctl enable sonar
+
+Access through your public ip:9000
+
+ufw allow 9000/tcp
+
+ufw enable 
+
+y
+
+ufw status
+
+
+and in cloud go to security group and add inbound rules with tcp port range as 9000 and anywhere	
